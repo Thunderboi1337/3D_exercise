@@ -2,6 +2,8 @@
 #include "numeric"
 #include "screen.h"
 
+char boat = 'o';
+
 struct vec3
 {
     float x, y, z;
@@ -128,6 +130,8 @@ int main(void)
         screen.input();
         SDL_Delay(30);
     }
+
+    screen.~Screen();
 
     return 0;
 }
