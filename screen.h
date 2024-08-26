@@ -15,9 +15,7 @@ public:
 
     void pixel(float x, float y);
     void show(void);
-
     void input();
-
     void clear();
 };
 

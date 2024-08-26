@@ -7,21 +7,34 @@ struct vec3
     float x, y, z;
 };
 
+struct connection
+{
+    int a, b;
+};
+
 void rotate(vec3 &point, float x = 1, float y = 1, float z = 1)
 {
-    float rad = 0;
+    float radX = x;
+    float radY = y;
+    float radZ = z;
 
-    rad = x;
-    point.y = std::cos(rad) * point.y - std::sin(rad) * point.z;
-    point.z = std::sin(rad) * point.y + std::cos(rad) * point.z;
+    // Rotate around X-axis
+    float cosX = std::cos(radX);
+    float sinX = std::sin(radX);
+    point.y = cosX * point.y - sinX * point.z;
+    point.z = sinX * point.y + cosX * point.z;
 
-    rad = y;
-    point.y = std::cos(rad) * point.x + std::sin(rad) * point.z;
-    point.z = std::sin(rad) * point.x + std::cos(rad) * point.z;
+    // Rotate around Y-axis
+    float cosY = std::cos(radY);
+    float sinY = std::sin(radY);
+    point.x = cosY * point.x + sinY * point.z;
+    point.z = -sinY * point.x + cosY * point.z;
 
-    rad = z;
-    point.x = std::cos(rad) * point.x - std::sin(rad) * point.y;
-    point.y = std::sin(rad) * point.x + std::cos(rad) * point.y;
+    // Rotate around Z-axis
+    float cosZ = std::cos(radZ);
+    float sinZ = std::sin(radZ);
+    point.x = cosZ * point.x - sinZ * point.y;
+    point.y = sinZ * point.x + cosZ * point.y;
 }
 
 void line(Screen &screen, float x1, float y1, float x2, float y2)
@@ -55,6 +68,24 @@ int main(void)
         {200, 200, 200},
         {100, 200, 200}};
 
+    std::vector<connection> connections{
+        {0, 4},
+        {1, 5},
+        {2, 6},
+        {3, 7},
+
+        {0, 1},
+        {1, 2},
+        {2, 3},
+        {3, 0},
+
+        {4, 5},
+        {5, 6},
+        {6, 7},
+        {7, 4},
+
+    };
+
     // calac centroid
     vec3 c{0, 0, 0};
     for (auto &p : points)
@@ -83,13 +114,20 @@ int main(void)
             screen.pixel(p.x, p.y);
         }
 
+        for (auto &conn : connections)
+        {
+            line(screen,
+                 points[conn.a].x,
+                 points[conn.a].y,
+                 points[conn.b].x,
+                 points[conn.b].y);
+        }
+
         screen.show();
         screen.clear();
         screen.input();
         SDL_Delay(30);
     }
-
-    screen.~Screen();
 
     return 0;
 }
